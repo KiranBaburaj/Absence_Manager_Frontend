@@ -1,4 +1,3 @@
-// src/components/Register.js
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/authSlice';
@@ -39,11 +38,14 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerUser(formData)).then((response) => {
-      if (!response.error) {
-        navigate('/login'); // Redirect to login after successful registration
-      }
-    });
+    const response = await dispatch(registerUser(formData));
+    if (!response.error) {
+      navigate('/login'); // Redirect to login after successful registration
+    }
+  };
+
+  const handleLoginRedirect = () => {
+    navigate('/login'); // Redirect to login page
   };
 
   return (
@@ -105,7 +107,7 @@ const Register = () => {
 
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
+              {typeof error === 'string' ? error : JSON.stringify(error)}
             </Alert>
           )}
 
@@ -134,6 +136,17 @@ const Register = () => {
             )}
           </Box>
         </form>
+
+        <Box sx={{ mt: 2 }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            onClick={handleLoginRedirect}
+          >
+            Already have an account? Login
+          </Button>
+        </Box>
       </Box>
     </Container>
   );
