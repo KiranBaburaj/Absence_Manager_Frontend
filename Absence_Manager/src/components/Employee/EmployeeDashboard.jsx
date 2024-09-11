@@ -1,5 +1,6 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch, } from 'react-redux';
 import { Container, Typography, Box, Button, Card, CardContent, CircularProgress } from '@mui/material';
 import { logout } from '../../store/authSlice';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +9,14 @@ const EmployeeDashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, loading } = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    // Redirect to login if the user is not a manager or not logged in
+    if (!loading && (!user || user.role != 'employee')) {
+      navigate('/login'); // Redirect to login page
+    }
+  }, [loading, user, navigate]); // Depend on loading, user, and navigate
 
   const handleLogout = () => {
     dispatch(logout());

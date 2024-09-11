@@ -15,7 +15,7 @@ import {
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, user } = useSelector((state) => state.auth); // Get user from state
+  const { loading, error, user } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -24,17 +24,15 @@ const Login = () => {
 
   // Check if the user is already logged in
   useEffect(() => {
-    if (user) {
+    if (user && user.role) {
       // Redirect based on user role
-      if (user.role == 'manager') {
-        navigate('/ManagerDashboard'); // Redirect to manager dashboard
-      } else if (user.role == 'employee') {
-        navigate('/EmployeeDashboard'); // Redirect to employee dashboard
-      } else {
-        navigate('/login'); // Redirect to a default page if role is not recognized
+      if (user.role === 'manager') {
+        navigate('/ManagerDashboard');
+      } else if (user.role === 'employee') {
+        navigate('/EmployeeDashboard');
       }
     }
-  }, [user, navigate]); // Depend on user and navigate
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -45,22 +43,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await dispatch(loginUser(formData));
-    
-    if (!response.error) {
-      // Redirect based on user role
-      if (user.role == 'manager') {
-        navigate('/ManagerDashboard'); // Redirect to manager dashboard
-      } else if (user.role == 'employee') {
-        navigate('/EmployeeDashboard'); // Redirect to employee dashboard
-      } else {
-        navigate('/login'); // Redirect to a default page if role is not recognized
-      }
-    }
+    await dispatch(loginUser(formData)); // Dispatch login action
+    // No need for navigation logic here
   };
 
   const handleRegisterRedirect = () => {
-    navigate('/register'); // Redirect to register page
+    navigate('/register');
   };
 
   return (
