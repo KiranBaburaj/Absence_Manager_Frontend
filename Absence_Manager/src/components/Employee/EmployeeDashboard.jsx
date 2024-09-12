@@ -1,19 +1,18 @@
-
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch, } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container, Typography, Box, Button, Card, CardContent, CircularProgress } from '@mui/material';
-import { logout } from '../../store/authSlice';
+import { logout } from '../../store/slice/authSlice';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../Navbar'; // Import the Navbar component
 
 const EmployeeDashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, loading } = useSelector((state) => state.auth);
 
-
   useEffect(() => {
-    // Redirect to login if the user is not a manager or not logged in
-    if (!loading && (!user || user.role != 'employee')) {
+    // Redirect to login if the user is not an employee or not logged in
+    if (!loading && (!user || user.role !== 'employee')) {
       navigate('/login'); // Redirect to login page
     }
   }, [loading, user, navigate]); // Depend on loading, user, and navigate
@@ -32,34 +31,41 @@ const EmployeeDashboard = () => {
   }
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Welcome, {user?.name}!
-        </Typography>
-        
-        <Card sx={{ mt: 2 }}>
-          <CardContent>
-            <Typography variant="h6" component="div" gutterBottom>
-              User Information
-            </Typography>
-            <Typography variant="body1">Username: {user?.name}</Typography>
-            <Typography variant="body1">Email: {user?.email || 'Not provided'}</Typography>
-            {/* Add more user info as needed */}
-          </CardContent>
-        </Card>
+    <>
+      <Navbar /> {/* Include the Navbar component here */}
+      <Container maxWidth="md">
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Welcome, {user?.name}!
+          </Typography>
+          
+          <Card sx={{ mt: 2 }}>
+            <CardContent>
+              <Typography variant="h6" component="div" gutterBottom>
+                User Information
+              </Typography>
+              <Typography variant="body1">Username: {user?.name}</Typography>
+              <Typography variant="body1">Email: {user?.email || 'Not provided'}</Typography>
+              <Typography variant="body1">Role: {user?.role}</Typography>
+              <Typography variant="body1">
+                Department: {user?.department.name || 'Not assigned'}
+              </Typography>
+              {/* Add more user info as needed */}
+            </CardContent>
+          </Card>
 
-        <Box sx={{ mt: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
+          <Box sx={{ mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </>
   );
 };
 

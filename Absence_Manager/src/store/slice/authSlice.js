@@ -10,6 +10,11 @@ const loadFromLocalStorage = (key, defaultValue = null) => {
   return storedValue ? JSON.parse(storedValue) : defaultValue;
 };
 
+export const fetchDepartments = createAsyncThunk('auth/fetchDepartments', async () => {
+    const response = await axios.get(`${API_URL}/departments/`); // Update with your API endpoint
+    return response.data;
+});
+
 // Async Thunks for Register and Login
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
@@ -43,11 +48,16 @@ const authSlice = createSlice({
       name: localStorage.getItem('userName') || null,
       email: localStorage.getItem('userEmail') || null, // Add email field
       role: localStorage.getItem('userRole') || null,   // Add role field
+      department: {
+        id: localStorage.getItem('userDepartmentId') || null,
+        name: localStorage.getItem('userDepartmentName') || null,
+      },
     },
     accessToken: localStorage.getItem('accessToken') || null,
     refreshToken: localStorage.getItem('refreshToken') || null,
     loading: false,
     error: null,
+    departments: [],
   },
   reducers: {
     logout: (state) => {
@@ -56,6 +66,10 @@ const authSlice = createSlice({
         name: null,
         email: null,
         role: null,
+        department: {
+          id: null,
+          name: null,
+        },
       };
       state.accessToken = null;
       state.refreshToken = null;
@@ -63,6 +77,8 @@ const authSlice = createSlice({
       localStorage.removeItem('userName');
       localStorage.removeItem('userEmail'); // Remove email from localStorage
       localStorage.removeItem('userRole');   // Remove role from localStorage
+      localStorage.removeItem('userDepartmentId'); // Remove department ID from localStorage
+      localStorage.removeItem('userDepartmentName'); // Remove department name from localStorage
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
     },
@@ -80,16 +96,22 @@ const authSlice = createSlice({
           name: payload.user.username,
           email: payload.user.email, // Save email on registration
           role: payload.user.role,    // Save role on registration
+          department: {
+            id: payload.user.department.id,
+            name: payload.user.department.name,
+          },
         };
         state.accessToken = payload.access;
         state.refreshToken = payload.refresh;
         state.loading = false;
 
-        // Save user id, name, email, role, and tokens to localStorage
+        // Save user id, name, email, role, department and tokens to localStorage
         localStorage.setItem('userId', payload.user.id);
         localStorage.setItem('userName', payload.user.username);
         localStorage.setItem('userEmail', payload.user.email); // Save email to localStorage
         localStorage.setItem('userRole', payload.user.role);    // Save role to localStorage
+        localStorage.setItem('userDepartmentId', payload.user.department.id); // Save department ID
+        localStorage.setItem('userDepartmentName', payload.user.department.name); // Save department name
         localStorage.setItem('accessToken', payload.access);
         localStorage.setItem('refreshToken', payload.refresh);
       })
@@ -108,22 +130,39 @@ const authSlice = createSlice({
           name: payload.user.username,
           email: payload.user.email, // Save email on login
           role: payload.user.role,    // Save role on login
+          department: {
+            id: payload.user.department.id,
+            name: payload.user.department.name,
+          },
         };
         state.accessToken = payload.access;
         state.refreshToken = payload.refresh;
         state.loading = false;
 
-        // Save user id, name, email, role, and tokens to localStorage
+        // Save user id, name, email, role, department and tokens to localStorage
         localStorage.setItem('userId', payload.user.id);
         localStorage.setItem('userName', payload.user.username);
         localStorage.setItem('userEmail', payload.user.email); // Save email to localStorage
         localStorage.setItem('userRole', payload.user.role);    // Save role to localStorage
+        localStorage.setItem('userDepartmentId', payload.user.department.id); // Save department ID
+        localStorage.setItem('userDepartmentName', payload.user.department.name); // Save department name
         localStorage.setItem('accessToken', payload.access);
         localStorage.setItem('refreshToken', payload.refresh);
       })
       .addCase(loginUser.rejected, (state, { payload }) => {
         state.loading = false;
         state.error = payload;
+      })
+      .addCase(fetchDepartments.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDepartments.fulfilled, (state, action) => {
+        state.loading = false;
+        state.departments = action.payload; // Store fetched departments
+      })
+      .addCase(fetchDepartments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });

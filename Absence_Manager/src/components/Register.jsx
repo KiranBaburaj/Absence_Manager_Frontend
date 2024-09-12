@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../store/authSlice';
+import { registerUser, fetchDepartments } from '../store/slice/authSlice'; // Import fetchDepartments
 import { useNavigate } from 'react-router-dom';
 import { 
   Container, 
@@ -19,8 +19,8 @@ import {
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth);
-  
+  const { loading, error, departments } = useSelector((state) => state.auth);
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -28,6 +28,11 @@ const Register = () => {
     department: '',
     role: 'employee',
   });
+
+  useEffect(() => {
+    // Fetch departments when component mounts
+    dispatch(fetchDepartments());
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({
@@ -84,14 +89,21 @@ const Register = () => {
             required
             margin="normal"
           />
-          <TextField
-            label="Department"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Department</InputLabel>
+            <Select
+              name="department"
+              value={formData.department}
+              onChange={handleChange}
+              required
+            >
+              {departments.map((dept) => (
+                <MenuItem key={dept.id} value={dept.id}>
+                  {dept.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <FormControl fullWidth margin="normal">
             <InputLabel>Role</InputLabel>
             <Select
