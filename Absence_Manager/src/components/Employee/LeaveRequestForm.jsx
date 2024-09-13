@@ -16,6 +16,26 @@ const LeaveRequestForm = () => {
   const [dateError, setDateError] = useState('');
   const [formError, setFormError] = useState(''); // New state for form validation error
 
+  const handleLeaveTypeChange = (e) => {
+    setLeaveType(e.target.value);
+    setFormError(''); // Clear form error on change
+  };
+
+  const handleStartDateChange = (e) => {
+    setStartDate(e.target.value);
+    setDateError(''); // Clear date error on change
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e.target.value);
+    setDateError(''); // Clear date error on change
+  };
+
+  const handleReasonChange = (e) => {
+    setReason(e.target.value);
+    setFormError(''); // Clear form error on change
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -49,6 +69,8 @@ const LeaveRequestForm = () => {
       setStartDate('');
       setEndDate('');
       setReason('');
+      setFormError(''); // Clear form error on successful submission
+      setDateError(''); // Clear date error on successful submission
     } catch (error) {
       console.error("Submission error:", error);
     }
@@ -64,15 +86,13 @@ const LeaveRequestForm = () => {
       {leaveRequestError && <Typography color="error">{leaveRequestError}</Typography>}
       {formError && <Typography color="error">{formError}</Typography>} {/* Display general form error */}
       {dateError && <Typography color="error">{dateError}</Typography>}
-      {leaveRequestStatus === 'loading' && <Typography color="info">Submitting your leave request...</Typography>}
-      {leaveRequestStatus === 'succeeded' && <Typography color="success.main">Leave request submitted successfully!</Typography>}
-      {leaveRequestStatus === 'failed' && <Typography color="error">Failed to submit leave request. Please try again.</Typography>}
+  
       <form onSubmit={handleSubmit}>
         <TextField
           select
           label="Leave Type"
           value={leaveType}
-          onChange={(e) => setLeaveType(e.target.value)}
+          onChange={handleLeaveTypeChange} // Updated
           sx={{ mb: 2 }}
           fullWidth
           SelectProps={{
@@ -89,7 +109,7 @@ const LeaveRequestForm = () => {
           type="date"
           label="Start Date"
           value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
+          onChange={handleStartDateChange} // Updated
           sx={{ mb: 2 }}
           fullWidth
           InputLabelProps={{
@@ -104,7 +124,7 @@ const LeaveRequestForm = () => {
           type="date"
           label="End Date"
           value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
+          onChange={handleEndDateChange} // Updated
           sx={{ mb: 2 }}
           fullWidth
           InputLabelProps={{
@@ -118,7 +138,7 @@ const LeaveRequestForm = () => {
         <TextField
           label="Reason"
           value={reason}
-          onChange={(e) => setReason(e.target.value)}
+          onChange={handleReasonChange} // Updated
           multiline
           rows={4}
           sx={{ mb: 2 }}

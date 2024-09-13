@@ -58,22 +58,46 @@ const LeaveRequestsList = () => {
                     {leaveRequests.map((request) => (
                         <ListItem 
                             key={request.id} 
-                            sx={{ backgroundColor: getStatusColor(request.status), mb: 1, borderRadius: 1 }}
+                            sx={{ 
+                                backgroundColor: getStatusColor(request.status), 
+                                mb: 1, 
+                                borderRadius: 1, 
+                                p: 2, 
+                                boxShadow: 3 // Adds slight shadow for better visual appeal
+                            }}
                         >
                             <ListItemText 
                                 primary={`${request.leave_type} from ${request.start_date} to ${request.end_date}`} 
                                 secondary={
                                     <>
                                         <Typography variant="body2">Reason: {request.reason}</Typography>
-                                        <Typography variant="body2">Status: {request.status}</Typography>
+                                        <Typography 
+                                            variant="h6" // Larger font size
+                                            sx={{ 
+                                                fontWeight: 'bold', 
+                                                textTransform: 'capitalize', // Capitalize status
+                                                color: 'text.secondary', // A light color for contrast
+                                            }}
+                                        >
+                                            Status: {request.status}
+                                        </Typography>
                                         <Typography variant="body2">Applied At: {new Date(request.applied_at).toLocaleString()}</Typography>
-                                        <Typography variant="body2">User ID: {request.user}</Typography>
                                     </>
                                 } 
                             />
                             {!isPastLeave(request.end_date) && ( // Conditionally render delete button for non-past leaves
                                 <ListItemSecondaryAction>
-                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(request.id)}>
+                                    <IconButton 
+                                        edge="end" 
+                                        aria-label="delete" 
+                                        onClick={() => handleDelete(request.id)} 
+                                        disabled={isPastLeave(request.end_date)} // Disable if past leave
+                                        sx={{ 
+                                            '&.Mui-disabled': { 
+                                                opacity: 0.5, // Makes the button semi-transparent when disabled
+                                            } 
+                                        }}
+                                    >
                                         <DeleteIcon />
                                     </IconButton>
                                 </ListItemSecondaryAction>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Typography, CircularProgress, Box, Card, CardContent, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
+import { Container, Typography, CircularProgress, Box, Card, CardContent, FormControl, Select, MenuItem, InputLabel, Chip } from '@mui/material';
 import { fetchEmployeesByDepartment, selectAllEmployees } from '../../store/slice/employeesSlice';
 import { fetchLeaveRequests, selectAllLeaveRequests, editLeaveRequest } from '../../store/slice/leaveslice/LeaveRequestSlice';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -39,7 +39,6 @@ const EmployeesByDepartment = () => {
     }, [departmentId, dispatch, status]);
 
     useEffect(() => {
-        // Filter leaves based on the selected month
         const filteredApproved = leaveRequests.filter(leave => 
             leave.status === 'approved' &&
             new Date(leave.start_date).getMonth() === value.getMonth() &&
@@ -83,7 +82,6 @@ const EmployeesByDepartment = () => {
         }
     };
 
-    // Function to add a class name for approved leave days
     const tileClassName = ({ date }) => {
         return approvedLeaves.some(leave => {
             const startDate = new Date(leave.start_date);
@@ -114,6 +112,24 @@ const EmployeesByDepartment = () => {
         );
     }
 
+    const leaveStatusChip = (status) => {
+        let color;
+        switch (status) {
+            case 'approved':
+                color = 'success';
+                break;
+            case 'pending':
+                color = 'warning';
+                break;
+            case 'rejected':
+                color = 'error';
+                break;
+            default:
+                color = 'default';
+        }
+        return <Chip label={status} color={color} />;
+    };
+
     return (
         <>
             <Navbar />
@@ -140,7 +156,7 @@ const EmployeesByDepartment = () => {
                             <Typography variant="h6">Approved Leaves</Typography>
                             {approvedLeaves.length > 0 ? approvedLeaves.map((leave) => (
                                 <Typography key={leave.id} variant="body2">
-                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} (Status: {leave.status})
+                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
                                 </Typography>
                             )) : (
                                 <Typography variant="body2">No approved leaves for this month.</Typography>
@@ -155,9 +171,9 @@ const EmployeesByDepartment = () => {
                             {pendingLeaves.length > 0 ? pendingLeaves.map((leave) => (
                                 <Box key={leave.id} sx={{ mb: 1 }}>
                                     <Typography variant="body2">
-                                        {leave.leave_type} from {leave.start_date} to {leave.end_date} (Status: {leave.status})
+                                        {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
                                     </Typography>
-                                    <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+                                    <FormControl variant="outlined" sx={{ minWidth: 120, mt: 1 }}>
                                         <InputLabel id={`status-label-${leave.id}`}>Change Status</InputLabel>
                                         <Select
                                             labelId={`status-label-${leave.id}`}
@@ -182,7 +198,7 @@ const EmployeesByDepartment = () => {
                             <Typography variant="h6">Rejected Leaves</Typography>
                             {rejectedLeaves.length > 0 ? rejectedLeaves.map((leave) => (
                                 <Typography key={leave.id} variant="body2">
-                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} (Status: {leave.status})
+                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
                                 </Typography>
                             )) : (
                                 <Typography variant="body2">No rejected leaves for this month.</Typography>
@@ -196,16 +212,16 @@ const EmployeesByDepartment = () => {
                             <CardContent>
                                 <Typography variant="h6">{employee.username}</Typography>
                                 <Typography variant="body1">Role: {employee.role}</Typography>
-                                <Typography variant="body1">Approved: {employee.is_approved ? 'Yes' : 'No'}</Typography>
+                              
                                 <Typography variant="body1">Leave Requests:</Typography>
                                 {leaveRequests
                                     .filter(leave => leave.user === employee.id)
                                     .map(leave => (
                                         <Box key={leave.id} sx={{ mb: 1 }}>
                                             <Typography variant="body2">
-                                                {leave.leave_type} from {leave.start_date} to {leave.end_date} (Status: {leave.status})
+                                                {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
                                             </Typography>
-                                            <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+                                            <FormControl variant="outlined" sx={{ minWidth: 120, mt: 1 }}>
                                                 <InputLabel id={`status-label-${leave.id}`}>Change Status</InputLabel>
                                                 <Select
                                                     labelId={`status-label-${leave.id}`}
@@ -218,7 +234,7 @@ const EmployeesByDepartment = () => {
                                                 </Select>
                                             </FormControl>
                                         </Box>
-                                    )) || <Typography variant="body2">No leave requests</Typography>}
+                                    ))}
                             </CardContent>
                         </Card>
                     ))}
