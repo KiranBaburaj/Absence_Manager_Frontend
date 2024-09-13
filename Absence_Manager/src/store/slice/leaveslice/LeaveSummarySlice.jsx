@@ -11,7 +11,7 @@ export const fetchLeaveSummary = createAsyncThunk(
         const token = state.auth.accessToken;
 
         try {
-            const response = await axios.get(`${API_URL}/leave-summary/`, {
+            const response = await axios.get(`${API_URL}/leave-summaries/`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

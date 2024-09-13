@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar'; 
 import LeaveRequestForm from './LeaveRequestForm'; 
 import LeaveRequestsList from './LeaveRequestsList';
+import LeaveSummaryComponent from './LeaveSummaryComponent';
 
 const EmployeeDashboard = () => {
   const dispatch = useDispatch();
@@ -59,6 +60,7 @@ const EmployeeDashboard = () => {
           <Grid item xs={12} md={8}>
             <LeaveRequestForm /> {/* Leave request form section */}
             <LeaveRequestsList /> {/* Leave requests list section */}
+            <LeaveSummaryComponent/>
           </Grid>
         </Grid>
 

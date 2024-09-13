@@ -8,6 +8,7 @@ import Navbar from '../Navbar';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './CalendarStyles.css';
+import LeaveSummaryComponent from '../Employee/LeaveSummaryComponent';
 
 const EmployeesByDepartment = () => {
     const { departmentId } = useParams();
@@ -205,6 +206,7 @@ const EmployeesByDepartment = () => {
                             )}
                         </CardContent>
                     </Card>
+                    <LeaveSummaryComponent/>
 
                     {/* Employees Section */}
                     {employees.map((employee) => (
