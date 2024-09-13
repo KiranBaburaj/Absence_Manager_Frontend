@@ -4,6 +4,8 @@ import { Container, Typography, Box, Button, Card, CardContent, CircularProgress
 import { logout } from '../../store/slice/authSlice';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar'; // Import the Navbar component
+import LeaveRequestForm from './LeaveRequestForm'; // Import the LeaveRequestForm component
+import LeaveRequestsList from './LeaveRequestsList';
 
 const EmployeeDashboard = () => {
   const dispatch = useDispatch();
@@ -11,15 +13,14 @@ const EmployeeDashboard = () => {
   const { user, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    // Redirect to login if the user is not an employee or not logged in
     if (!loading && (!user || user.role !== 'employee')) {
-      navigate('/login'); // Redirect to login page
+      navigate('/login');
     }
-  }, [loading, user, navigate]); // Depend on loading, user, and navigate
+  }, [loading, user, navigate]);
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login'); // Redirect to login page after successful logout
+    navigate('/login');
   };
 
   if (loading) {
@@ -32,7 +33,7 @@ const EmployeeDashboard = () => {
 
   return (
     <>
-      <Navbar /> {/* Include the Navbar component here */}
+      <Navbar />
       <Container maxWidth="md">
         <Box sx={{ mt: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
@@ -50,16 +51,13 @@ const EmployeeDashboard = () => {
               <Typography variant="body1">
                 Department: {user?.department.name || 'Not assigned'}
               </Typography>
-              {/* Add more user info as needed */}
             </CardContent>
           </Card>
+          <LeaveRequestForm /> {/* Include the LeaveRequestForm component here */}
+          <LeaveRequestsList/>
 
           <Box sx={{ mt: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleLogout}
-            >
+            <Button variant="contained" color="primary" onClick={handleLogout}>
               Logout
             </Button>
           </Box>

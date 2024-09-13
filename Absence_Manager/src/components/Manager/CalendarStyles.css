@@ -1,0 +1,7 @@
+/* CalendarStyles.css */
+
+.approved-leave {
+    background-color: rgba(218, 19, 5, 0.5); /* Light green background for approved leaves */
+    border-radius: 50%;
+    color: white; /* Change text color for better readability */
+}
