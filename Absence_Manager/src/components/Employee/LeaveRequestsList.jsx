@@ -28,6 +28,24 @@ const LeaveRequestsList = () => {
         }
     };
 
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'approved':
+                return 'success.light';
+            case 'pending':
+                return 'warning.light';
+            case 'rejected':
+                return 'error.light';
+            default:
+                return 'background.paper';
+        }
+    };
+
+    const isPastLeave = (endDate) => {
+        const today = new Date();
+        return new Date(endDate) < today; // Returns true if the leave end date has passed
+    };
+
     return (
         <Box sx={{ mt: 4 }}>
             <Typography variant="h5" component="h2" gutterBottom>
@@ -38,7 +56,10 @@ const LeaveRequestsList = () => {
             {leaveRequestStatus === 'succeeded' && (
                 <List>
                     {leaveRequests.map((request) => (
-                        <ListItem key={request.id}>
+                        <ListItem 
+                            key={request.id} 
+                            sx={{ backgroundColor: getStatusColor(request.status), mb: 1, borderRadius: 1 }}
+                        >
                             <ListItemText 
                                 primary={`${request.leave_type} from ${request.start_date} to ${request.end_date}`} 
                                 secondary={
@@ -50,11 +71,13 @@ const LeaveRequestsList = () => {
                                     </>
                                 } 
                             />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(request.id)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
+                            {!isPastLeave(request.end_date) && ( // Conditionally render delete button for non-past leaves
+                                <ListItemSecondaryAction>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(request.id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            )}
                         </ListItem>
                     ))}
                 </List>
