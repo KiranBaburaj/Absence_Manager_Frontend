@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLeaveRequests, selectAllLeaveRequests, deleteLeaveRequest } from '../../store/slice/leaveslice/LeaveRequestSlice'; // Adjust the path as necessary
-import { Box, Typography, CircularProgress, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton } from '@mui/material';
+import { fetchLeaveRequests, selectAllLeaveRequests, deleteLeaveRequest } from '../../store/slice/leaveslice/LeaveRequestSlice';
+import { Box, Typography, CircularProgress, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Alert } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const LeaveRequestsList = () => {
@@ -24,20 +24,19 @@ const LeaveRequestsList = () => {
             dispatch(fetchLeaveRequests());
         } catch (error) {
             console.error("Delete failed:", error);
-            // Optionally, handle the error with a notification to the user
         }
     };
 
     const getStatusColor = (status) => {
         switch (status) {
             case 'approved':
-                return 'success.light';
+                return '#d4edda'; // Light green
             case 'pending':
-                return 'warning.light';
+                return '#fff3cd'; // Light yellow
             case 'rejected':
-                return 'error.light';
+                return '#f8d7da'; // Light red
             default:
-                return 'background.paper';
+                return '#ffffff'; // Default white
         }
     };
 
@@ -47,12 +46,12 @@ const LeaveRequestsList = () => {
     };
 
     return (
-        <Box sx={{ mt: 4 }}>
-            <Typography variant="h5" component="h2" gutterBottom>
+        <Box sx={{ mt: 4, p: 3, borderRadius: '8px', backgroundColor: '#ffffff', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#0077b5' }}>
                 Leave Requests
             </Typography>
             {leaveRequestStatus === 'loading' && <CircularProgress />}
-            {leaveRequestStatus === 'failed' && <Typography color="error">{leaveRequestError}</Typography>}
+            {leaveRequestStatus === 'failed' && <Alert severity="error">{leaveRequestError}</Alert>}
             {leaveRequestStatus === 'succeeded' && (
                 <List>
                     {leaveRequests.map((request) => (
@@ -61,40 +60,40 @@ const LeaveRequestsList = () => {
                             sx={{ 
                                 backgroundColor: getStatusColor(request.status), 
                                 mb: 1, 
-                                borderRadius: 1, 
+                                borderRadius: '8px', 
                                 p: 2, 
-                                boxShadow: 3 // Adds slight shadow for better visual appeal
+                                boxShadow: 1 // Adds slight shadow for better visual appeal
                             }}
                         >
                             <ListItemText 
                                 primary={`${request.leave_type} from ${request.start_date} to ${request.end_date}`} 
                                 secondary={
                                     <>
-                                        <Typography variant="body2">Reason: {request.reason}</Typography>
+                                        <Typography variant="body2" sx={{ color: '#555' }}>Reason: {request.reason}</Typography>
                                         <Typography 
-                                            variant="h6" // Larger font size
+                                            variant="h6"
                                             sx={{ 
                                                 fontWeight: 'bold', 
-                                                textTransform: 'capitalize', // Capitalize status
-                                                color: 'text.secondary', // A light color for contrast
+                                                textTransform: 'capitalize', 
+                                                color: '#333',
                                             }}
                                         >
                                             Status: {request.status}
                                         </Typography>
-                                        <Typography variant="body2">Applied At: {new Date(request.applied_at).toLocaleString()}</Typography>
+                                        <Typography variant="body2" sx={{ color: '#777' }}>Applied At: {new Date(request.applied_at).toLocaleString()}</Typography>
                                     </>
                                 } 
                             />
-                            {!isPastLeave(request.end_date) && ( // Conditionally render delete button for non-past leaves
+                            {!isPastLeave(request.end_date) && (
                                 <ListItemSecondaryAction>
                                     <IconButton 
                                         edge="end" 
                                         aria-label="delete" 
                                         onClick={() => handleDelete(request.id)} 
-                                        disabled={isPastLeave(request.end_date)} // Disable if past leave
+                                        disabled={isPastLeave(request.end_date)} 
                                         sx={{ 
                                             '&.Mui-disabled': { 
-                                                opacity: 0.5, // Makes the button semi-transparent when disabled
+                                                opacity: 0.5, 
                                             } 
                                         }}
                                     >
