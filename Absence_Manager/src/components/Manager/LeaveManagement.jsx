@@ -6,7 +6,7 @@ import { fetchLeaveRequests, selectAllLeaveRequests } from '../../store/slice/le
 import LeaveCalendar from './LeaveCalendar';
 import LeaveList from './LeaveList';
 import Navbar from '../Navbar';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const LeaveManagement = () => {
   const { departmentId } = useParams(); // Get departmentId from URL params
@@ -15,8 +15,15 @@ const LeaveManagement = () => {
   const leaveRequests = useSelector(selectAllLeaveRequests);
   const status = useSelector((state) => state.employees.status);
   const error = useSelector((state) => state.employees.error);
-
+  const user = useSelector((state) => state.auth.user);
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user || user.role !== 'manager') {
+        navigate('/login');
+    }
+}, [user, navigate]);
 
   useEffect(() => {
     if (status === 'idle') {
