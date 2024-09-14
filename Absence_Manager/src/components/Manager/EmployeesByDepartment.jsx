@@ -140,7 +140,7 @@ const EmployeesByDepartment = () => {
                         <Typography variant="h6">Approved Leaves</Typography>
                         {approvedLeaves.length > 0 ? approvedLeaves.map((leave) => (
                             <Typography key={leave.id} variant="body2">
-                                {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
+                                {leave.leave_type} from {leave.start_date} to {leave.end_date} {leaveStatusChip(leave.status)}
                             </Typography>
                         )) : (
                             <Typography variant="body2">No approved leaves for this month.</Typography>
@@ -155,7 +155,7 @@ const EmployeesByDepartment = () => {
                         {pendingLeaves.length > 0 ? pendingLeaves.map((leave) => (
                             <Box key={leave.id} sx={{ mb: 1 }}>
                                 <Typography variant="body2">
-                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
+                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} {leaveStatusChip(leave.status)}
                                 </Typography>
                                 <FormControl variant="outlined" sx={{ minWidth: 120, mt: 1 }}>
                                     <InputLabel id={`status-label-${leave.id}`}>Change Status</InputLabel>
