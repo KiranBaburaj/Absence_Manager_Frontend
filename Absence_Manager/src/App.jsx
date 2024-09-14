@@ -7,6 +7,7 @@ import Login from './components/Login';
 import EmployeeDashboard from './components/Employee/EmployeeDashboard';
 import ManagerDashboard from './components/Manager/ManagerDashboard';
 import EmployeesByDepartment from './components/Manager/EmployeesByDepartment';
+import Leaveapplypage from './components/Employee/Leaveapplypage';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/EmployeeDashboard" element={<EmployeeDashboard />} />
+        <Route path="/EmployeeLeave" element={<Leaveapplypage/>} />
         <Route path="/ManagerDashboard" element={<ManagerDashboard/>} />
         <Route path="/departments/:departmentId/employees" element={<EmployeesByDepartment />} />
         

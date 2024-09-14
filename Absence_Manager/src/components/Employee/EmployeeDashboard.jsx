@@ -1,11 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Typography, Box, Button, Card, CardContent, CircularProgress, Grid } from '@mui/material';
-import { logout } from '../../store/slice/authSlice';
+import { Container, Typography, Box, CircularProgress, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar'; 
-import LeaveRequestForm from './LeaveRequestForm'; 
-import LeaveRequestsList from './LeaveRequestsList';
 import LeaveSummaryComponent from './LeaveSummaryComponent';
 
 const EmployeeDashboard = () => {
@@ -18,11 +15,6 @@ const EmployeeDashboard = () => {
       navigate('/login');
     }
   }, [loading, user, navigate]);
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
-  };
 
   if (loading) {
     return (
@@ -43,32 +35,24 @@ const EmployeeDashboard = () => {
         </Box>
         
         <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ p: 3, boxShadow: 3, borderRadius: '8px' }}>
-              <CardContent>
-                <Typography variant="h5" component="div" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#333' }}>
-                  User Information
-                </Typography>
-                <Typography variant="body1" sx={{ color: '#555' }}><strong>Username:</strong> {user?.name}</Typography>
-                <Typography variant="body1" sx={{ color: '#555' }}><strong>Email:</strong> {user?.email || 'Not provided'}</Typography>
-                <Typography variant="body1" sx={{ color: '#555' }}><strong>Role:</strong> {user?.role}</Typography>
-                <Typography variant="body1" sx={{ color: '#555' }}><strong>Department:</strong> {user?.department.name || 'Not assigned'}</Typography>
-              </CardContent>
-            </Card>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ p: 3, boxShadow: 3, borderRadius: '8px', backgroundColor: '#fff' }}>
+              <Typography variant="h5" component="div" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#333' }}>
+                User Information
+              </Typography>
+              <Typography variant="body1" sx={{ color: '#555' }}><strong>Username:</strong> {user?.name}</Typography>
+              <Typography variant="body1" sx={{ color: '#555' }}><strong>Email:</strong> {user?.email || 'Not provided'}</Typography>
+              <Typography variant="body1" sx={{ color: '#555' }}><strong>Role:</strong> {user?.role}</Typography>
+              <Typography variant="body1" sx={{ color: '#555' }}><strong>Department:</strong> {user?.department.name || 'Not assigned'}</Typography>
+            </Box>
           </Grid>
 
-          <Grid item xs={12} md={8}>
-            <LeaveRequestForm /> {/* Leave request form section */}
-            <LeaveRequestsList /> {/* Leave requests list section */}
-            <LeaveSummaryComponent/>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ p: 3, backgroundColor: '#fff', borderRadius: '8px' }}>
+              <LeaveSummaryComponent />
+            </Box>
           </Grid>
         </Grid>
-
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
-          <Button variant="contained" color="primary" onClick={handleLogout} sx={{ backgroundColor: '#0077b5', '&:hover': { backgroundColor: '#005582' } }}>
-            Logout
-          </Button>
-        </Box>
       </Container>
     </>
   );

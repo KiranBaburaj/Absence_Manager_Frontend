@@ -40,32 +40,18 @@ const EmployeesByDepartment = () => {
     }, [departmentId, dispatch, status]);
 
     useEffect(() => {
-        const filteredApproved = leaveRequests.filter(leave => 
-            leave.status === 'approved' &&
+        const filterLeaves = (leaveStatus) => leaveRequests.filter(leave =>
+            leave.status === leaveStatus &&
             new Date(leave.start_date).getMonth() === value.getMonth() &&
             new Date(leave.start_date).getFullYear() === value.getFullYear()
         );
-
-        const filteredPending = leaveRequests.filter(leave => 
-            leave.status === 'pending' &&
-            new Date(leave.start_date).getMonth() === value.getMonth() &&
-            new Date(leave.start_date).getFullYear() === value.getFullYear()
-        );
-
-        const filteredRejected = leaveRequests.filter(leave => 
-            leave.status === 'rejected' &&
-            new Date(leave.start_date).getMonth() === value.getMonth() &&
-            new Date(leave.start_date).getFullYear() === value.getFullYear()
-        );
-
-        setApprovedLeaves(filteredApproved);
-        setPendingLeaves(filteredPending);
-        setRejectedLeaves(filteredRejected);
+        setApprovedLeaves(filterLeaves('approved'));
+        setPendingLeaves(filterLeaves('pending'));
+        setRejectedLeaves(filterLeaves('rejected'));
     }, [leaveRequests, value]);
 
     const handleStatusChange = (leaveId, newStatus) => {
         const currentLeaveRequest = leaveRequests.find(leave => leave.id === leaveId);
-
         if (currentLeaveRequest) {
             dispatch(editLeaveRequest({
                 leaveRequestId: leaveId,
@@ -134,45 +120,88 @@ const EmployeesByDepartment = () => {
     return (
         <>
             <Navbar />
-            <Container maxWidth="md">
-                <Box sx={{ mt: 4 }}>
-                    <Typography variant="h4" component="h1" gutterBottom>
+            <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f4f4f4', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', p: 3 }}>
+                <Box sx={{ mb: 4 }}>
+                    <Typography variant="h3" component="h1" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#0077b5' }}>
                         Employees in Department {departmentName || 'N/A'}
                     </Typography>
-                    
-                    {/* Calendar Component */}
-                    <Calendar
-                        onChange={setValue}
-                        value={value}
-                        tileClassName={tileClassName} 
-                    />
+                </Box>
 
-                    <Typography variant="h5" sx={{ mt: 3 }}>
+                <Box sx={{ mb: 4 }}>
+                    <Calendar onChange={setValue} value={value} tileClassName={tileClassName} />
+                    <Typography variant="h5" sx={{ mt: 3, fontFamily: 'Roboto, sans-serif', color: '#0077b5' }}>
                         Leave Requests for {value.toLocaleString('default', { month: 'long', year: 'numeric' })}:
                     </Typography>
+                </Box>
 
-                    {/* Approved Leaves Section */}
-                    <Card sx={{ mb: 2 }}>
-                        <CardContent>
-                            <Typography variant="h6">Approved Leaves</Typography>
-                            {approvedLeaves.length > 0 ? approvedLeaves.map((leave) => (
-                                <Typography key={leave.id} variant="body2">
+                {/* Approved Leaves */}
+                <Card sx={{ mb: 2, p: 3, backgroundColor: '#fff', borderRadius: '8px', boxShadow: 3 }}>
+                    <CardContent>
+                        <Typography variant="h6">Approved Leaves</Typography>
+                        {approvedLeaves.length > 0 ? approvedLeaves.map((leave) => (
+                            <Typography key={leave.id} variant="body2">
+                                {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
+                            </Typography>
+                        )) : (
+                            <Typography variant="body2">No approved leaves for this month.</Typography>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Pending Leaves */}
+                <Card sx={{ mb: 2, p: 3, backgroundColor: '#fff', borderRadius: '8px', boxShadow: 3 }}>
+                    <CardContent>
+                        <Typography variant="h6">Pending Leaves</Typography>
+                        {pendingLeaves.length > 0 ? pendingLeaves.map((leave) => (
+                            <Box key={leave.id} sx={{ mb: 1 }}>
+                                <Typography variant="body2">
                                     {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
                                 </Typography>
-                            )) : (
-                                <Typography variant="body2">No approved leaves for this month.</Typography>
-                            )}
-                        </CardContent>
-                    </Card>
+                                <FormControl variant="outlined" sx={{ minWidth: 120, mt: 1 }}>
+                                    <InputLabel id={`status-label-${leave.id}`}>Change Status</InputLabel>
+                                    <Select
+                                        labelId={`status-label-${leave.id}`}
+                                        value={leave.status}
+                                        onChange={(e) => handleStatusChange(leave.id, e.target.value)}
+                                    >
+                                        <MenuItem value="pending">Pending</MenuItem>
+                                        <MenuItem value="approved">Approve</MenuItem>
+                                        <MenuItem value="rejected">Reject</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        )) : (
+                            <Typography variant="body2">No pending leaves for this month.</Typography>
+                        )}
+                    </CardContent>
+                </Card>
 
-                    {/* Pending Leaves Section */}
-                    <Card sx={{ mb: 2 }}>
+                {/* Rejected Leaves */}
+                <Card sx={{ mb: 2, p: 3, backgroundColor: '#fff', borderRadius: '8px', boxShadow: 3 }}>
+                    <CardContent>
+                        <Typography variant="h6">Rejected Leaves</Typography>
+                        {rejectedLeaves.length > 0 ? rejectedLeaves.map((leave) => (
+                            <Typography key={leave.id} variant="body2">
+                                {leave.leave_type} from {leave.start_date} to {leave.end_date} {leaveStatusChip(leave.status)}
+                            </Typography>
+                        )) : (
+                            <Typography variant="body2">No rejected leaves for this month.</Typography>
+                        )}
+                    </CardContent>
+                </Card>
+                <LeaveSummaryComponent/>
+
+                {/* Employees Section */}
+                {employees.map((employee) => (
+                    <Card key={employee.id} sx={{ mb: 2, p: 3, backgroundColor: '#fff', borderRadius: '8px', boxShadow: 3 }}>
                         <CardContent>
-                            <Typography variant="h6">Pending Leaves</Typography>
-                            {pendingLeaves.length > 0 ? pendingLeaves.map((leave) => (
+                            <Typography variant="h6">{employee.username}</Typography>
+                            <Typography variant="body1">Role: {employee.role}</Typography>
+                            <Typography variant="body1">Leave Requests:</Typography>
+                            {leaveRequests.filter(leave => leave.user === employee.id).map(leave => (
                                 <Box key={leave.id} sx={{ mb: 1 }}>
                                     <Typography variant="body2">
-                                        {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
+                                        {leave.leave_type} from {leave.start_date} to {leave.end_date} {leaveStatusChip(leave.status)}
                                     </Typography>
                                     <FormControl variant="outlined" sx={{ minWidth: 120, mt: 1 }}>
                                         <InputLabel id={`status-label-${leave.id}`}>Change Status</InputLabel>
@@ -187,60 +216,10 @@ const EmployeesByDepartment = () => {
                                         </Select>
                                     </FormControl>
                                 </Box>
-                            )) : (
-                                <Typography variant="body2">No pending leaves for this month.</Typography>
-                            )}
+                            ))}
                         </CardContent>
                     </Card>
-
-                    {/* Rejected Leaves Section */}
-                    <Card sx={{ mb: 2 }}>
-                        <CardContent>
-                            <Typography variant="h6">Rejected Leaves</Typography>
-                            {rejectedLeaves.length > 0 ? rejectedLeaves.map((leave) => (
-                                <Typography key={leave.id} variant="body2">
-                                    {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
-                                </Typography>
-                            )) : (
-                                <Typography variant="body2">No rejected leaves for this month.</Typography>
-                            )}
-                        </CardContent>
-                    </Card>
-                    <LeaveSummaryComponent/>
-
-                    {/* Employees Section */}
-                    {employees.map((employee) => (
-                        <Card key={employee.id} sx={{ mb: 2 }}>
-                            <CardContent>
-                                <Typography variant="h6">{employee.username}</Typography>
-                                <Typography variant="body1">Role: {employee.role}</Typography>
-                              
-                                <Typography variant="body1">Leave Requests:</Typography>
-                                {leaveRequests
-                                    .filter(leave => leave.user === employee.id)
-                                    .map(leave => (
-                                        <Box key={leave.id} sx={{ mb: 1 }}>
-                                            <Typography variant="body2">
-                                                {leave.leave_type} from {leave.start_date} to {leave.end_date} ({leaveStatusChip(leave.status)})
-                                            </Typography>
-                                            <FormControl variant="outlined" sx={{ minWidth: 120, mt: 1 }}>
-                                                <InputLabel id={`status-label-${leave.id}`}>Change Status</InputLabel>
-                                                <Select
-                                                    labelId={`status-label-${leave.id}`}
-                                                    value={leave.status}
-                                                    onChange={(e) => handleStatusChange(leave.id, e.target.value)}
-                                                >
-                                                    <MenuItem value="pending">Pending</MenuItem>
-                                                    <MenuItem value="approved">Approved</MenuItem>
-                                                    <MenuItem value="rejected">Rejected</MenuItem>
-                                                </Select>
-                                            </FormControl>
-                                        </Box>
-                                    ))}
-                            </CardContent>
-                        </Card>
-                    ))}
-                </Box>
+                ))}
             </Container>
         </>
     );

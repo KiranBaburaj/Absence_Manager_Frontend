@@ -1,4 +1,3 @@
-// Navbar.js
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -16,20 +15,80 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ backgroundColor: '#0077b5', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
       <Toolbar>
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Manager Dashboard
+        <Typography 
+          variant="h6" 
+          sx={{ flexGrow: 1, fontFamily: 'Roboto, sans-serif', color: '#fff' }}
+        >
+          My Application
         </Typography>
-        <Button color="inherit" onClick={() => navigate('/view-team')}>View Team</Button>
-        <Button color="inherit" onClick={() => navigate('/approve-requests')}>Approve Requests</Button>
+
+        {/* Conditionally Render Buttons Based on User Role */}
+        {user?.role === 'employee' && (
+          <>
+            <Button 
+              color="inherit" 
+              onClick={() => navigate('/EmployeeDashboard')} 
+              sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
+            >
+              Employee Dashboard
+            </Button>
+            <Button 
+              color="inherit" 
+              onClick={() => navigate('/EmployeeLeave')} 
+              sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
+            >
+              Apply Leave
+            </Button>
+          </>
+        )}
+
+        {user?.role === 'manager' && (
+          <>
+            <Button 
+              color="inherit" 
+              onClick={() => navigate('/ManagerDashboard')} 
+              sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
+            >
+              Manager Dashboard
+            </Button>
+            {user?.department?.id && (
+              <Button 
+                color="inherit" 
+                onClick={() => navigate(`/departments/${user.department.id}/employees`)} 
+                sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
+              >
+                View Department Employees
+              </Button>
+            )}
+            <Button 
+              color="inherit" 
+              onClick={() => navigate('/approve-requests')} 
+              sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
+            >
+              Approve Requests
+            </Button>
+          </>
+        )}
+
         {/* User Details */}
         <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 2 }}>
-          <Typography variant="body1" sx={{ marginRight: 1 }}>
+          <Typography 
+            variant="body1" 
+            sx={{ marginRight: 1, fontFamily: 'Roboto, sans-serif', color: '#fff' }}
+          >
             {user?.name} ({user?.role})
           </Typography>
         </Box>
-        <Button color="inherit" onClick={handleLogout}>Logout</Button>
+
+        <Button 
+          color="inherit" 
+          onClick={handleLogout} 
+          sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none' }}
+        >
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );
