@@ -6,8 +6,10 @@ import { fetchLeaveRequests, selectAllLeaveRequests } from '../../store/slice/le
 import LeaveCalendar from './LeaveCalendar';
 import LeaveList from './LeaveList';
 import Navbar from '../Navbar';
+import { useParams } from 'react-router-dom';
 
 const LeaveManagement = () => {
+  const { departmentId } = useParams(); // Get departmentId from URL params
   const dispatch = useDispatch();
   const employees = useSelector(selectAllEmployees);
   const leaveRequests = useSelector(selectAllLeaveRequests);
@@ -18,10 +20,10 @@ const LeaveManagement = () => {
 
   useEffect(() => {
     if (status === 'idle') {
-      dispatch(fetchEmployeesByDepartment()); // Adjust if you need to fetch by department
+      dispatch(fetchEmployeesByDepartment(departmentId)); // Fetch employees by departmentId
       dispatch(fetchLeaveRequests());
     }
-  }, [dispatch, status]);
+  }, [departmentId, dispatch, status]);
 
   if (status === 'loading') {
     return (
@@ -51,7 +53,7 @@ const LeaveManagement = () => {
       <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f4f4f4', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', p: 3 }}>
         <Box sx={{ mb: 4 }}>
           <Typography variant="h3" component="h1" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#0077b5' }}>
-            Leave Management
+            Leave Management 
           </Typography>
         </Box>
 

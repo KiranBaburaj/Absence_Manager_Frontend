@@ -76,7 +76,13 @@ const ManagerDashboard = () => {
           >
             View Team
           </Button>
-          <Button   onClick={() => navigate(`/LeaveManagement/${user.department.id}/employees`)}  variant="contained" color="secondary">
+          <Button   onClick={        () => {
+    // Assuming department id is available in user.department.id
+    const departmentId = user?.department.id;
+    if (departmentId) {
+      navigate(`/LeaveManagement/${departmentId}/employees`);
+    }
+  }}  variant="contained" color="secondary">
             Approve Requests
           </Button>
         </Box>

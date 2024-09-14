@@ -64,7 +64,13 @@ const Navbar = () => {
             )}
             <Button 
               color="inherit" 
-              onClick={() => navigate(`/LeaveManagement/${user.department.id}/employees`)} 
+              onClick={        () => {
+                // Assuming department id is available in user.department.id
+                const departmentId = user?.department.id;
+                if (departmentId) {
+                  navigate(`/LeaveManagement/${departmentId}/employees`);
+                }
+              }}
               sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
             >
               Approve Requests
