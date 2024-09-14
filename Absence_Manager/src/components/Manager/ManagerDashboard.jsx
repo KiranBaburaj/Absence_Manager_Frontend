@@ -19,16 +19,16 @@ const ManagerDashboard = () => {
 
   if (loading) {
     return (
-      <Container maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <CircularProgress />
-      </Container>
+      <>
+        <Navbar />
+        <Container maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <CircularProgress />
+        </Container>
+      </>
     );
   }
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login'); // Redirect to login page after successful logout
-  };
+
 
   const handleViewTeam = () => {
     // Assuming department id is available in user.department.id
@@ -41,55 +41,47 @@ const ManagerDashboard = () => {
   return (
     <>
       <Navbar /> {/* Include the Navbar component here */}
-      <Container maxWidth="md">
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
+      <Container maxWidth="lg" sx={{ mt: 4, backgroundColor: '#f4f4f4', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)', p: 3 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#0077b5' }}>
             Welcome, {user?.name}!
           </Typography>
-          
-          <Card sx={{ mt: 2 }}>
-            <CardContent>
-              <Typography variant="h6" component="div" gutterBottom>
-                User Information
-              </Typography>
-              <Typography variant="body1">Username: {user?.name}</Typography>
-              <Typography variant="body1">Email: {user?.email || 'Not provided'}</Typography>
-              <Typography variant="body1">Role: {user?.role}</Typography>
-              <Typography variant="body1">
-                Department: {user?.department.name || 'Not assigned'}
-              </Typography>
-              {/* Add more user info as needed */}
-            </CardContent>
-          </Card>
-
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="h6" component="div" gutterBottom>
-              Manager Actions
-            </Typography>
-            {/* Example Manager Actions */}
-            <Button 
-              variant="contained" 
-              color="secondary" 
-              sx={{ mr: 2 }} 
-              onClick={handleViewTeam} // Navigate to team view
-            >
-              View Team
-            </Button>
-            <Button variant="contained" color="secondary">
-              Approve Requests
-            </Button>
-          </Box>
-
-          <Box sx={{ mt: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
-          </Box>
         </Box>
+
+        <Card sx={{ mb: 4 }}>
+          <CardContent>
+            <Typography variant="h6" component="div" gutterBottom>
+              User Information
+            </Typography>
+            <Typography variant="body1">Username: {user?.name}</Typography>
+            <Typography variant="body1">Email: {user?.email || 'Not provided'}</Typography>
+            <Typography variant="body1">Role: {user?.role}</Typography>
+            <Typography variant="body1">
+              Department: {user?.department.name || 'Not assigned'}
+            </Typography>
+            {/* Add more user info as needed */}
+          </CardContent>
+        </Card>
+
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6" component="div" gutterBottom sx={{ fontFamily: 'Roboto, sans-serif', color: '#0077b5' }}>
+            Manager Actions
+          </Typography>
+          {/* Example Manager Actions */}
+          <Button 
+            variant="contained" 
+            color="secondary" 
+            sx={{ mr: 2 }} 
+            onClick={handleViewTeam} // Navigate to team view
+          >
+            View Team
+          </Button>
+          <Button   onClick={() => navigate(`/LeaveManagement/${user.department.id}/employees`)}  variant="contained" color="secondary">
+            Approve Requests
+          </Button>
+        </Box>
+
+
       </Container>
     </>
   );

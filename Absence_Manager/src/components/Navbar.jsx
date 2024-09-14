@@ -59,12 +59,12 @@ const Navbar = () => {
                 onClick={() => navigate(`/departments/${user.department.id}/employees`)} 
                 sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
               >
-                View Department Employees
+                View  Employees
               </Button>
             )}
             <Button 
               color="inherit" 
-              onClick={() => navigate('/approve-requests')} 
+              onClick={() => navigate(`/LeaveManagement/${user.department.id}/employees`)} 
               sx={{ fontFamily: 'Roboto, sans-serif', textTransform: 'none', marginRight: 2 }}
             >
               Approve Requests
