@@ -58,7 +58,7 @@ const Navbar = () => {
           variant="h6"
           sx={{ flexGrow: 1, fontFamily: 'Roboto, sans-serif', color: '#fff' }}
         >
-          My Application
+          ABSence
         </Typography>
 
         {/* Desktop Menu */}

@@ -83,6 +83,9 @@ const authSlice = createSlice({
       localStorage.removeItem('refreshToken');
     },
   },
+  clearError: (state) => {
+    state.error = null;
+  },
   extraReducers: (builder) => {
     builder
       // Register User
@@ -151,7 +154,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, { payload }) => {
         state.loading = false;
-        state.error = payload;
+        state.error = payload?.non_field_errors ? payload.non_field_errors[0] : "An error occurred";
       })
       .addCase(fetchDepartments.pending, (state) => {
         state.loading = true;
@@ -167,5 +170,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout,clearError  } = authSlice.actions;
 export default authSlice.reducer;

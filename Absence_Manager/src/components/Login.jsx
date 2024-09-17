@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '../store/slice/authSlice';
+import { loginUser ,clearError } from '../store/slice/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { 
   Container, 
@@ -33,6 +33,16 @@ const Login = () => {
       }
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        dispatch(clearError()); // Dispatch clear error action after 3 seconds
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer); // Cleanup the timeout if the component unmounts
+    }
+  }, [error, dispatch]);
 
   const handleChange = (e) => {
     setFormData({
